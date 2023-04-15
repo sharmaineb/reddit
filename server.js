@@ -1,62 +1,30 @@
-import express from 'express';
-import { engine } from 'express-handlebars';
-
+const express = require('express');
+const { engine } = require('express-handlebars');
 const app = express();
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
+require('./controllers/posts')(app);
+
+// Set db
+require('./data/reddit-db');
+
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
 app.set('views', './views');
 
+// HOME
+
 app.get('/', (req, res) => {
     res.render('home');
 });
 
-// CASES RESOURCE
-
 // NEW
 
-app.get('/cases/new', (req, res) => {
-    res.render('cases-new', {});
-})
-
-// CREATE
-
-app.post('/cases', (req, res) => {
-    console.log("hello")
-
-    const caseId = "3"
-    res.redirect(`/cases/${caseId}`)
-});
-
-// INDEX 
-
-// SHOW
-
-app.get('/cases/:id', (req, res) => {
-    console.log(req.params.id);
-
-    res.render('cases-show', { case })
-});
-
-// EDIT
-
-app.get('/cases/:id/edit', (req, res) => {
-// find the case
-// render edit form
-})
-  
-// UPDATE
-
-app.put('/cases/:id', (req, res) => {
-// update the case
-// redirect show
-})
-  
-// DESTROY
-
-app.delete('/cases/:id', (req, res) => {
-// delete the case
-// redirect to index
+app.get('/posts/new', (req, res) => {
+    res.render('posts-new', {});
 })
 
 app.listen(3000);
