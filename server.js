@@ -6,10 +6,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 require('./controllers/posts')(app);
+require('./controllers/comments.js')(app);
 
 // Set db
 require('./data/reddit-db');
-
 
 app.engine('handlebars', engine());
 app.set('view engine', 'handlebars');
