@@ -1,12 +1,14 @@
 const express = require('express');
 const { engine } = require('express-handlebars');
 const cookieParser = require('cookie-parser');
+const checkAuth = require('./middleware/checkAuth');
 const app = express();
 require('dotenv').config();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser()); // Add this after you initialize express.
+app.use(checkAuth);
 
 require('./controllers/posts')(app);
 require('./controllers/comments.js')(app);
