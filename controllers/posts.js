@@ -43,27 +43,24 @@ app.post('/posts/new', (req, res) => {
   }
 });
 
-// LOOK UP THE POST
-app.get('/posts/:id', async (req, res) => {
-  try {
+// SHOW
+app.get('/posts/:id', (req, res) => {
   const currentUser = req.user;
-  const post = await Post.
-  Post.findById(req.params.id).lean().populate({ path:'comments', populate: { path: 'author' } }).populate('author')
-  return res.render('posts-show', { post, currentUser });
-  } catch (err) {
+  Post.findById(req.params.id).populate('comments').lean()
+    .then((post) => res.render('posts-show', { post, currentUser }))
+    .catch((err) => {
       console.log(err.message);
-  }
+    });
 });
 
 // SUBREDDIT
-app.get('/n/:subreddit', async (req, res) => {
-  try {
-  const posts = await Post.find({ subreddit: req.params.subreddit }).lean().populate('author')
-  const currentUser = req.user
-  return res.render('posts-index', { posts, currentUser })
-} catch(err) {
-  console.log(err)
-}
+app.get('/n/:subreddit', (req, res) => {
+  const { user } = req;
+  Post.find({ subreddit: req.params.subreddit }).lean()
+    .then((posts) => res.render('posts-index', { posts, user }))
+    .catch((err) => {
+      console.log(err);
+    });
 });
 
 }
