@@ -5,19 +5,27 @@ const Comment = require('../models/comment');
 module.exports = (app) => {
   
 // INDEX
-app.get('/', (req, res) => {
-  const { user } = req;
-  console.log(req.cookies);
-  Post.find({}).lean().populate('author')
-    .then((posts) => res.render('posts-index', { posts, user }))
-    .catch((err) => {
+app.get('/', async (req, res) => {
+  try {
+      const currentUser = await req.user;
+      console.log(currentUser);
+      const posts = await Post.find({}).lean().populate('author');
+      return res.render('posts-index', { posts, currentUser });
+  } catch (err) {
       console.log(err.message);
-    });
+  };
 });
 
 app.get('/posts/new', (req, res) => {
-    res.render('posts-new');
-})
+    if (req.user) {
+      const currentUser = req.user;
+      res.render('posts-new', { currentUser });
+    } else {
+      console.log('unauthorized');
+      res.render('error', { errorMessage:'You need to be logged in to see this page.'});
+      return res.status(401); // UNAUTHORIZED
+    };
+});
 
 // CREATE
 app.post('/posts/new', (req, res) => {

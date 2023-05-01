@@ -2,6 +2,7 @@ const User = require('../models/user');
 const jwt = require('jsonwebtoken');
 
 module.exports = app => {
+  app.get('/sign-up', (req, res) => res.render('sign-up'))
   // SIGN UP POST
   app.post('/sign-up', (req, res) => {
     // Create User and JWT
